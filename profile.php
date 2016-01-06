@@ -1,12 +1,16 @@
 <?php session_start();
+	
+	require(__DIR__.'/fonctions.php');
 
 	// je checke que l'utilisateur est bien logué
-	if (empty($_SESSION['user'])){
-		// one redirige le user vers l'accueil
-		header('Location: index.php');
-		// force l'arrêt de cette page
-		die();
-	}
+	checkLoggedIn();
+
+	// if (empty($_SESSION['user'])){
+	// 	// one redirige le user vers l'accueil
+	// 	header('Location: index.php');
+	// 	// force l'arrêt de cette page
+	// 	die();
+	// }
 ?>
 
 <!DOCTYPE html>
@@ -19,13 +23,30 @@
 
 </head>
 <body>
+		<nav class="navbar navbar-inverse">
+		  <div class="container">
+		    <div class="navbar-header">
+		        <a class="navbar-brand" href="#">Session</a>
+		    </div>
+
+		      <ul class="nav navbar-nav">
+		        <li><a href="#">Home</a></li>
+		        <li><a href="#">Friends</a></li>
+		      </ul>
+		      <ul class="nav navbar-nav navbar-right">
+		        <li class="<<?php if($page == 'profile') echo 'active'; ?>"><a href="#">Profile</a></li>
+		        <li><a href="logout.php">Logout</a></li>
+		      </ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6">
 			<h1>Profil</h1>
 			<h5><a href="logout.php">Logout</a></h5>
 			<?php if (isset($_SESSION['user'])) :?>
-			<?php print_r($_SESSION['user']); ?>
+			<?php pr($_SESSION['user']); ?>
 			<?php endif; ?>
 			<p>Bienvenue <?php echo $_SESSION['user']['email']; ?></p>
 			<p>Cette page n'est accessible que pour les nouveaux utilisateurs ou

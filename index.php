@@ -1,5 +1,6 @@
 <?php
 session_start(); 
+$page='profile';
 ?>
 <!DOCTYPE html>
 <html>
@@ -11,6 +12,7 @@ session_start();
 
 </head>
 <body>
+	
 	<div class="container">
 			<div class="row">
 			<?php if (isset($_SESSION['message'])) :?>
@@ -24,7 +26,11 @@ session_start();
 					<h1>Register</h1>
 					<!-- affiche les erreurs srockées en session avec la clé registerErrors -->
 					<?php if (isset($_SESSION['registerErrors'])) : ?>
-					<?php		print_r($_SESSION['registerErrors']);?>
+						<div class="alert alert-danger" role="alert">
+							<?php foreach ($_SESSION['registerErrors'] as $keyError => $error) : ?>
+								<p> <?php echo $error; ?> </p>
+							<?php endforeach; ?>	
+						</div>
 					<!-- il faut supprimer les erreurs une fois affichées sinon elles vont rester -->
 					<?php		unset($_SESSION['registerErrors']);?>
 					<?php endif; ?>
@@ -47,6 +53,26 @@ session_start();
 			</div>
 			<div class="col-md-6" >
 				<h1>Login</h1>
+				<!-- affiche les erreurs srockées en session avec la clé loginErrors -->
+					<?php if (isset($_SESSION['loginErrors'])) : ?>
+
+							<?php if(isset($_SESSION['loginErrors']['email'])) : ?> 
+							<div class="alert alert-danger"> 
+								<?php echo ($_SESSION['loginErrors']['email']);?> 
+								<?php unset($_SESSION['loginErrors']['email']) ?> 
+							</div>
+							<?php endif;?>
+								
+							<?php if(isset($_SESSION['loginErrors']['password'])) : ?> 
+							<div class="alert alert-danger"> 
+								<?php echo ($_SESSION['loginErrors']['password']);?> 
+								<?php unset($_SESSION['loginErrors']['password']) ?> 
+							</div>
+							<?php endif;?>
+					
+					<!-- il faut supprimer les erreurs une fois affichées sinon elles vont rester -->
+					<?php		unset($_SESSION['loginErrors']);?>
+					<?php endif; ?>
 				<form method="POST" action="loginHandler.php">
 					<!-- copié de bootstrap -->
 					<div class="form-group">
