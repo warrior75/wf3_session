@@ -13,6 +13,51 @@ if (isset($_POST['action'])) {
 	echo $password;
 	echo $passwordConfirm;
 
+	//initialisation d'un tableau d'erreur
+	$errors = array();
+
+	// check du champs email
+	if (empty($email) || (filter_var($email, FILTER_VALIDATE_EMAIL) == 
+		false)) {
+		$errors['email'] = "Wrong email";
+	} elseif (strlen($email) > 60) {
+		$errors['email'] = "Email too long";
+	} else {
+			// je vérifie que l'email est inexistant dans la bdd
+			$query = $pdo -> prepare('SELECT email FROM users WHERE email = :email');
+			$query -> bindvalue(':email',$email,PDO::PARAM_STR);
+			$query -> execute();
+			//je récupère le résultat sql
+			$resulatEmail = $query -> fetch();
+
+			if ($resulatEmail['email']){
+				$errors['email'] = "Email already exists";
+			}
+		}
+	// check le champs password
+	// 1. vérifier que les 2 password sont identiques
+	// 2. vérifier que le password ne fasse pas moin de 6 caractères
+	// 3. condition de caractères avec un pattern 	
+	if ($password != $passwordConfirm ) {
+			$errors['password'] = "Not same passwords";
+		}
+	elseif(strlen($password) <= 6 ) {
+			$errors['password'] = "Password to short";
+		}	
+	else {
+		// Le password contient au moins une lettre
+		$containsLetter = preg_match('/[a-zA-Z]/', $password);
+		// Le password contient au moins un chiffre
+		$containsDigit = preg_match('/\d/', $password);
+		// Le password contient au moins un autre caractère spécial
+		$containsSpecial = preg_match('/[^a-zA-Z\d]/', $password);
+		
+		//si une des conditions n'est pas remplie ... erreur 
+		if ($containsLetter || $containsDigit || $containsSpecial) {
+			$errors['password'] = "Choose a best password with a least one letter, one number and one special character";
+		}
+
+	}
 	
 }
  ?>
