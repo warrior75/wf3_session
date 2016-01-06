@@ -23,6 +23,7 @@
 		<div class="row">
 			<div class="col-md-6">
 			<h1>Profil</h1>
+			<h5><a href="logout.php">Logout</a></h5>
 			<?php if (isset($_SESSION['user'])) :?>
 			<?php print_r($_SESSION['user']); ?>
 			<?php endif; ?>
