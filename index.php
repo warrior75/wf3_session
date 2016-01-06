@@ -13,6 +13,13 @@ session_start();
 <body>
 	<div class="container">
 			<div class="row">
+			<?php if (isset($_SESSION['message'])) :?>
+			<div class="alert alert-info" >
+				<!-- même démarche pour mes erreurs en bas -->
+				<?php	echo $_SESSION['message']; ?>
+				<?php	unset($_SESSION['message']); ?>
+			</div>
+			<?php endif; ?>
 				<div class="col-md-6">
 					<h1>Register</h1>
 					<!-- affiche les erreurs srockées en session avec la clé registerErrors -->
