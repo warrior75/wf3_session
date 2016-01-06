@@ -1,4 +1,5 @@
-<?php 
+<?php
+session_start(); 
 require(__DIR__.'/config/db.php'); 
 
 //je vérifie que le bouton submit a été cliqué
@@ -53,7 +54,6 @@ if (isset($_POST['action'])) {
 			$errors['password'] = "Choose a best password with a least one letter, one number and one special character";
 		}
 	}
-	echo "string";
 	print_r($errors);
 	// si pas d'erreurs, j'enregistre l'utilisateur en bdd
 	if (empty($errors)) {
@@ -65,7 +65,27 @@ if (isset($_POST['action'])) {
 			echo $hashedPassword;						  	
 			$query -> bindValue(':password',$hashedPassword,PDO::PARAM_STR);
 			$query -> execute();
-
+			if ($query->rowCount() > 0) {
+				// récupération de l'utilisateur depuis la bdd
+				// pour l'affecter à une variable de sessions
+				$query = $pdo -> prepare('SELECT * FROM users WHERE id = :id');
+				$query->bindValue(':id',$pdo->lastInsertId(),PDO::PARAM_INT);
+				$query->execute();
+				$resultUser = $query->fetch();
+				
+				//On stocke le user en session mais on retire le password avant
+				unset($resultUser['password']);
+				$_SESSION['user']=$resultUser;
+				// On redirige l'utilisateur
+				header("Location: profile.php");
+				die();
+				}
+			} 
+		else {
+			$_SESSION['registerErrors'] = $errors;
+			header("Location: index.php");
+			die();
 		}	
+		
 }
  ?>

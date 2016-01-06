@@ -1,3 +1,6 @@
+<?php
+session_start(); 
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +15,12 @@
 			<div class="row">
 				<div class="col-md-6">
 					<h1>Register</h1>
+					<!-- affiche les erreurs srockées en session avec la clé registerErrors -->
+					<?php if (isset($_SESSION['registerErrors'])) : ?>
+					<?php		print_r($_SESSION['registerErrors']);?>
+					<!-- il faut supprimer les erreurs une fois affichées sinon elles vont rester -->
+					<?php		unset($_SESSION['registerErrors']);?>
+					<?php endif; ?>
 					<form method="POST" action="registerHandler.php">
 					<!-- copié de bootstrap -->
 					<div class="form-group">
