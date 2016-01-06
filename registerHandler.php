@@ -8,11 +8,7 @@ if (isset($_POST['action'])) {
 	$email = trim(htmlentities( $_POST['email'])); // htmlentities:échaper les balises html
 	$password = trim(htmlentities( $_POST['password']));//trim: supprime les espaces dans les champs saisis
 	$passwordConfirm = trim(htmlentities( $_POST['passwordConfirm']));
-
-	echo $email;
-	echo $password;
-	echo $passwordConfirm;
-
+	
 	//initialisation d'un tableau d'erreur
 	$errors = array();
 
@@ -25,7 +21,7 @@ if (isset($_POST['action'])) {
 	} else {
 			// je vérifie que l'email est inexistant dans la bdd
 			$query = $pdo -> prepare('SELECT email FROM users WHERE email = :email');
-			$query -> bindvalue(':email',$email,PDO::PARAM_STR);
+			$query -> bindValue(':email',$email,PDO::PARAM_STR);
 			$query -> execute();
 			//je récupère le résultat sql
 			$resulatEmail = $query -> fetch();
@@ -53,11 +49,23 @@ if (isset($_POST['action'])) {
 		$containsSpecial = preg_match('/[^a-zA-Z\d]/', $password);
 		
 		//si une des conditions n'est pas remplie ... erreur 
-		if ($containsLetter || $containsDigit || $containsSpecial) {
+		if (!$containsLetter || !$containsDigit || !$containsSpecial) {
 			$errors['password'] = "Choose a best password with a least one letter, one number and one special character";
 		}
-
 	}
-	
+	echo "string";
+	print_r($errors);
+	// si pas d'erreurs, j'enregistre l'utilisateur en bdd
+	if (empty($errors)) {
+			$query = $pdo -> prepare('INSERT INTO users(email,password,created_at,updated_at)
+									  VALUES(:email, :password, NOW(), NOW())');
+			$query -> bindValue(':email',$email,PDO::PARAM_STR);
+			// hash du password pour la sécurite
+			$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+			echo $hashedPassword;						  	
+			$query -> bindValue(':password',$hashedPassword,PDO::PARAM_STR);
+			$query -> execute();
+
+		}	
 }
  ?>
