@@ -13,7 +13,7 @@
 	// 	die();
 	// }
 
-	$page = 'profile';
+	$page = 'home';
 ?>
 
 <!DOCTYPE html>
@@ -31,8 +31,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6">
-			<h1>Profil</h1>
-			<h5><a href="logout.php">Logout</a></h5>
+			<h1>Home</h1>
 			<?php if (isset($_SESSION['user'])) :?>
 			<?php pr($_SESSION['user']); ?>
 			<?php endif; ?>

@@ -1,6 +1,6 @@
 <?php
 session_start(); 
-$page='profile';
+$page='index';
 ?>
 <!DOCTYPE html>
 <html>
@@ -84,7 +84,7 @@ $page='profile';
 						<input type="password" class="form-control" id="password" name="password" placeholder="Password">
 					</div>
 					<div class="form-group">
-						<a href="">Forgot password ?</a>
+						<a href="forgotPassword.php">Forgot password ?</a>
 					</div>
 					<div class="checkbox">
 						<label>
