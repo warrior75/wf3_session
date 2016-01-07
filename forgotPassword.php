@@ -11,7 +11,8 @@ require(__DIR__.'/vendor/autoload.php');
 		//2. affecter une viariable à l'email récupéré
 		$email = trim(htmlentities($_POST['email']));
 		$errors = array();
-		$infos = array();
+		$notifications = array();
+		
 
 		// check la validité de l'émail
 
@@ -46,38 +47,28 @@ require(__DIR__.'/vendor/autoload.php');
  					$query -> execute();
 
 					// le user est présent alors on génère un nouveau mot de passe
-					$infos['email'] = 'Un email a été envoyé pour réinitialiser votre mot de passe';
+					// $notifications['email'] = 'Un email a été envoyé pour réinitialiser votre mot de passe';
 
 					//equivalent à http://localhost/wf3_session_2/forgotPassword.php?token=*****&email=******
 					$resetLink = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).'/resetPassword.php?token='.$token.'&email='.$email;
 					// mail($email, 'Reset Password', 'Pour redéfinir votre mot de passe cliquer sur ce lien :'.$resetLink);
 
+					//instancier un nouvel objet PHPMailer
 					$mail = new PHPMailer;
 
-					$mail->SMTPDebug = 3;                               	// Enable verbose debug output
-
-					 $mail->isSMTP();                                      // Set mailer to use SMTP
-					 $mail->Host = 'smtp.gmail.com'; 						// Specify main and backup SMTP servers
-					 $mail->SMTPAuth = true;                               // Enable SMTP authentication
-					 $mail->Username = 'wf3.noreply@gmail.com';              // SMTP username
-					 $mail->Password = 'merciwf3';                           // SMTP password
-					 $mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
-					 $mail->Port = 465;                                    // TCP port to connect to
-
+					// email et nom de l'expéditeur
 					$mail->setFrom('admin@wf3.com', 'Admin');
-					$mail->addAddress($email, 'Joe User');     // Add a recipient
 
-					$mail->isHTML(true);                                  // Set email format to HTML
-
+					// // email et nom du destinataire
+					$mail->addAddress($email, 'Joe User');  
+					$mail->isHTML(true);
 					$mail->Subject = 'Reset password';
 					$mail->Body    = 'pour redéfinir votre mot de passe cliquez sur ce lien :<a href="'.$resetLink.'">Lien</a>';
-					$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
 					if(!$mail->send()) {
-					    echo 'Message could not be sent.';
-					    echo 'Mailer Error: ' . $mail->ErrorInfo;
+					    $errors['email']='Application error, email not send'.$resetLink;
 					} else {
-					    echo 'Message has been sent';
+					    $notifications['email']='Un email a été envoyé, veuilliez vérifier vos mails.'.$resetLink;
 					}
 				}
 			}
@@ -108,9 +99,9 @@ require(__DIR__.'/vendor/autoload.php');
 	 						<?php endforeach; ?>
 	 					</div>	
 	 				<?php endif; ?>
-	 					<?php if (!empty($infos['email'])) :?>
+	 					<?php if (!empty($notifications['email'])) :?>
 	 					<div class="alert alert-info" role="alert">
-	 						<?php  foreach ($infos as $info) :?>
+	 						<?php  foreach ($notifications as $info) :?>
 	 						<p> <?php echo $info ; ?> </p>
 	 						<?php endforeach; ?>
 	 					</div>	
